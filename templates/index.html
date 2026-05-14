@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>薬検索システム</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>💊 薬検索システム</h1>
+
+    <!-- 薬検索 -->
+    <div class="card">
+        <h2>薬検索</h2>
+
+        <form method="POST">
+            <input type="text" name="medicine" placeholder="薬名を入力">
+            <button type="submit" name="action" value="medicine">検索</button>
+        </form>
+
+        {% if medicine_result %}
+            <p><b>成分:</b> {{ medicine_result.ingredient }}</p>
+            <p><b>効能:</b> {{ medicine_result.effect }}</p>
+            <p class="warning"><b>注意:</b> {{ medicine_result.warning }}</p>
+        {% endif %}
+    </div>
+
+    <!-- 症状検索 -->
+    <div class="card">
+        <h2>症状検索</h2>
+
+        <form method="POST">
+
+            {% for s in symptom_list %}
+                <button type="submit"
+                        name="symptom"
+                        value="{{ s }}"
+                        class="tag">
+                    {{ s }}
+                </button>
+            {% endfor %}
+
+            <input type="hidden" name="action" value="symptom">
+        </form>
+
+        {% if symptom_result is not none %}
+            <ul>
+                {% for m in symptom_result %}
+                    <li>{{ m }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <!-- 併用チェック -->
+    <div class="card">
+        <h2>併用チェック</h2>
+
+        <form method="POST">
+            <input type="text" name="med1" placeholder="薬1">
+            <input type="text" name="med2" placeholder="薬2">
+            <button type="submit" name="action" value="interaction">チェック</button>
+        </form>
+
+        {% if interaction_result %}
+            <p class="{% if '注意' in interaction_result %}warning{% else %}ok{% endif %}">
+                {{ interaction_result }}
+            </p>
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>
